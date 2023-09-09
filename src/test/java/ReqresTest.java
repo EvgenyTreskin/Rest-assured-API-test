@@ -1,7 +1,9 @@
+import io.restassured.specification.ResponseSpecification;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static io.restassured.RestAssured.given;
 
@@ -10,9 +12,13 @@ public class ReqresTest {
 
     private final static String URL = "https://reqres.in";
 
-    private List<UserData> getUserData() {
+    private void getSpecificationResponse(ResponseSpecification response) {
         Specifications.installSpecification(Specifications.requestSpecification(URL),
-                Specifications.responseSpecification200());
+                response);
+    }
+
+    private List<UserData> getUserData() {
+        getSpecificationResponse(Specifications.responseSpecification200());
         List<UserData> users = given()
                 .when()
                 .get("/api/users?page=2")
@@ -25,6 +31,7 @@ public class ReqresTest {
                 .getList("data", UserData.class);
         return users;
     }
+
 
     @Test
     public void checkAvatarAndIdTest() {
@@ -47,8 +54,7 @@ public class ReqresTest {
 
     @Test
     public void successfulRegistrationTest() {
-        Specifications.installSpecification(Specifications.requestSpecification(URL),
-                Specifications.responseSpecification200());
+        getSpecificationResponse(Specifications.responseSpecification200());
         Integer id = 4;
         String token = "QpwL5tke4Pnpja7X4";
         Register user = new Register("eve.holt@reqres.in", "pistol");
@@ -69,8 +75,7 @@ public class ReqresTest {
 
     @Test
     public void unsuccessfulRegistrationTest() {
-        Specifications.installSpecification(Specifications.requestSpecification(URL),
-                Specifications.responseSpecification400());
+        getSpecificationResponse(Specifications.responseSpecification400());
         Register user = new Register("sydney@fife", "");
         UnsuccessRegister unsuccessRegister = given()
                 .body(user)
@@ -82,5 +87,23 @@ public class ReqresTest {
                 .extract()
                 .as(UnsuccessRegister.class);
         Assertions.assertEquals("Missing password", unsuccessRegister.getError());
+    }
+
+    @Test
+    public void sortedByYearsTest() {
+        getSpecificationResponse(Specifications.responseSpecification200());
+        List<ColorData> colors = given()
+                .when()
+                .get("/api/unknown")
+                .then()
+                .log()
+                .all()
+                .extract()
+                .body()
+                .jsonPath()
+                .getList("data", ColorData.class);
+        List<Integer> years = colors.stream().map(ColorData::getYear).collect(Collectors.toList());
+        List<Integer> sortedYears = years.stream().sorted().collect(Collectors.toList());
+        Assertions.assertEquals(sortedYears, years);
     }
 }

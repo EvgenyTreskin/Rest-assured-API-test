@@ -10,3 +10,6 @@ Test1.
 Test1.
 1. Check response code, Test successful user registration
 2. Check response code, Test unsuccessful user registration
+
+Test3.
+1. Make sure that LIST <RESOURCE> return sorted by year data
