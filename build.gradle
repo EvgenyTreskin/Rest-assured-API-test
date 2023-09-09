@@ -21,7 +21,7 @@ test {
     retry{
         //also we can use @RetryTest() annotation, but we must do it in each test
         maxRetries = 3
-        maxFailures = 30
+        maxFailures = 20
         failOnPassedAfterRetry = true
     }
 }

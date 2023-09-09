@@ -1,24 +1,21 @@
-import dev.failsafe.internal.util.Assert;
-import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static io.restassured.RestAssured.given;
-import static io.restassured.RestAssured.proxy;
+
 
 public class ReqresTest {
 
-    private final static String URL = "https://reqres.in/";
+    private final static String URL = "https://reqres.in";
 
     private List<UserData> getUserData() {
         Specifications.installSpecification(Specifications.requestSpecification(URL),
                 Specifications.responseSpecification200());
         List<UserData> users = given()
                 .when()
-                .get("api/users?page=2")
+                .get("/api/users?page=2")
                 .then()
                 .log()
                 .all()
@@ -46,5 +43,44 @@ public class ReqresTest {
     public void checkEmailEndsTest() {
         List<UserData> users = getUserData();
         Assertions.assertTrue(users.stream().allMatch(x -> x.getEmail().endsWith("@reqres.in")));
+    }
+
+    @Test
+    public void successfulRegistrationTest() {
+        Specifications.installSpecification(Specifications.requestSpecification(URL),
+                Specifications.responseSpecification200());
+        Integer id = 4;
+        String token = "QpwL5tke4Pnpja7X4";
+        Register user = new Register("eve.holt@reqres.in", "pistol");
+        SuccessRegister successRegister = given()
+                .body(user)
+                .when()
+                .post("/api/register")
+                .then()
+                .log()
+                .all()
+                .extract()
+                .as(SuccessRegister.class);
+        Assertions.assertNotNull(successRegister.getId());
+        Assertions.assertNotNull(successRegister.getToken());
+        Assertions.assertEquals(id, successRegister.getId());
+        Assertions.assertEquals(token, successRegister.getToken());
+    }
+
+    @Test
+    public void unsuccessfulRegistrationTest() {
+        Specifications.installSpecification(Specifications.requestSpecification(URL),
+                Specifications.responseSpecification400());
+        Register user = new Register("sydney@fife", "");
+        UnsuccessRegister unsuccessRegister = given()
+                .body(user)
+                .when()
+                .post("/api/register")
+                .then()
+                .log()
+                .all()
+                .extract()
+                .as(UnsuccessRegister.class);
+        Assertions.assertEquals("Missing password", unsuccessRegister.getError());
     }
 }

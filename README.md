@@ -8,6 +8,5 @@ Test1.
 3. Make sure that email contains "@reqres.in"
 
 Test1.
-1. Test successful user registration
-2. Test unsuccessful user registration
-3. Check response code
+1. Check response code, Test successful user registration
+2. Check response code, Test unsuccessful user registration
