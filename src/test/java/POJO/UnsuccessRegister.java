@@ -1,3 +1,5 @@
+package POJO;
+
 public class UnsuccessRegister {
     private String error;
 

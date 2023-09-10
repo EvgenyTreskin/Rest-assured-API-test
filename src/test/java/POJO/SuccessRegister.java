@@ -1,3 +1,5 @@
+package POJO;
+
 public class SuccessRegister {
     private Integer id;
     private String token;

@@ -1,3 +1,5 @@
+package POJO;
+
 public class ColorData {
     private Integer id;
     private String name;

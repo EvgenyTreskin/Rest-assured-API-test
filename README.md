@@ -13,3 +13,9 @@ Test1.
 
 Test3.
 1. Make sure that LIST <RESOURCE> return sorted by year data
+
+Test4.
+1. Delete second user and check response status
+
+Test5.
+1. Update user info and compare update time with current time

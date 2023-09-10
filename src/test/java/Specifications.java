@@ -7,23 +7,20 @@ import io.restassured.specification.ResponseSpecification;
 
 
 public class Specifications {
-    public  static RequestSpecification requestSpecification(String url){
+    public static RequestSpecification requestSpecification(String url) {
         return new RequestSpecBuilder()
                 .setBaseUri(url)
                 .setContentType(ContentType.JSON)
                 .build();
     }
-    public static ResponseSpecification responseSpecification200(){
+
+    public static ResponseSpecification responseSpecification(int status) {
         return new ResponseSpecBuilder()
-                .expectStatusCode(200)
+                .expectStatusCode(status)
                 .build();
     }
-    public static ResponseSpecification responseSpecification400(){
-        return new ResponseSpecBuilder()
-                .expectStatusCode(400)
-                .build();
-    }
-    public static void installSpecification(RequestSpecification request, ResponseSpecification response){
+
+    public static void installSpecification(RequestSpecification request, ResponseSpecification response) {
         RestAssured.requestSpecification = request;
         RestAssured.responseSpecification = response;
     }

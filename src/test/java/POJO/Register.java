@@ -1,3 +1,5 @@
+package POJO;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Register {
